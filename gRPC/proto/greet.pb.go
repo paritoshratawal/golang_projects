@@ -147,6 +147,7 @@ func (x *HelloResponse) GetMessage() string {
 
 type NamesList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Names         []string               `protobuf:"bytes,1,rep,name=names,proto3" json:"names,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -181,9 +182,16 @@ func (*NamesList) Descriptor() ([]byte, []int) {
 	return file_proto_greet_proto_rawDescGZIP(), []int{3}
 }
 
+func (x *NamesList) GetNames() []string {
+	if x != nil {
+		return x.Names
+	}
+	return nil
+}
+
 type MessageList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       []string               `protobuf:"bytes,1,rep,name=message,proto3" json:"message,omitempty"`
+	Messages      []string               `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -218,9 +226,9 @@ func (*MessageList) Descriptor() ([]byte, []int) {
 	return file_proto_greet_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *MessageList) GetMessage() []string {
+func (x *MessageList) GetMessages() []string {
 	if x != nil {
-		return x.Message
+		return x.Messages
 	}
 	return nil
 }
@@ -234,10 +242,11 @@ const file_proto_greet_proto_rawDesc = "" +
 	"\fHelloRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\")\n" +
 	"\rHelloResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\v\n" +
-	"\tNamesList\"'\n" +
-	"\vMessageList\x12\x18\n" +
-	"\amessage\x18\x01 \x03(\tR\amessage2\xdc\x02\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"!\n" +
+	"\tNamesList\x12\x14\n" +
+	"\x05names\x18\x01 \x03(\tR\x05names\")\n" +
+	"\vMessageList\x12\x1a\n" +
+	"\bmessages\x18\x01 \x03(\tR\bmessages2\xdc\x02\n" +
 	"\fGreetService\x12@\n" +
 	"\bSayHello\x12\x16.greet_service.NoParam\x1a\x1c.greet_service.HelloResponse\x12S\n" +
 	"\x17SayHelloServerStreaming\x12\x18.greet_service.NamesList\x1a\x1c.greet_service.HelloResponse0\x01\x12T\n" +
