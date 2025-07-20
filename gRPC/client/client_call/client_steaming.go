@@ -9,8 +9,6 @@ import (
 
 func CallSayHelloClientStreaming(client pb.GreetServiceClient, names *pb.NamesList) {
 	log.Printf("Client started streaming")
-	// ctx, cancel := context.WithCancel(context.TODO())
-	// defer cancel()
 	stream, err := client.SayHelloClientStreaming(context.TODO())
 	if err != nil {
 		log.Fatalf("Error while streaming to server: %v", err)
@@ -25,4 +23,5 @@ func CallSayHelloClientStreaming(client pb.GreetServiceClient, names *pb.NamesLi
 		}
 		log.Println("Send the request with name: ", name)
 	}
+
 }

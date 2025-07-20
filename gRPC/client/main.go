@@ -27,5 +27,6 @@ func main() {
 	}
 	// pc.CallSayHello(client)
 	// pc.CallSayHelloServerStreaming(client, names)
-	pc.CallSayHelloClientStreaming(client, names)
+	// pc.CallSayHelloClientStreaming(client, names)
+	pc.CallSayHelloBidirectionalStreaming(client, names)
 }
