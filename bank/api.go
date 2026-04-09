@@ -9,34 +9,18 @@ import (
 )
 
 type APIServer struct {
-	listenAddr string
+	listenAddr 	string
+	store 		Storage
 }
 
 type APIError struct {
 	Error string
 }
 
-// //Function signature for API handlers
-type apiFunc func(http.ResponseWriter, *http.Request) error
-
-func WriteJSON(w http.ResponseWriter, status int, v any) error{
-	w.WriteHeader(status)
-	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(v)
-}
-
-func makeHttpHandlerFunc(f apiFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := f(w, r); err != nil {
-			//handle the error
-			WriteJSON(w, http.StatusBadRequest, APIError{Error: err.Error()})
-		}
-	}
-}
-
-func NewAPIServer(listenAddr string) *APIServer{
+func NewAPIServer(listenAddr string, store Storage) *APIServer{
 	return &APIServer{
-		listenAddr: listenAddr,
+		listenAddr	: 	listenAddr,
+		store		: 	store,
 	}
 }
 
@@ -65,7 +49,17 @@ func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error{
 }
 
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error{
-	return nil
+	createAccountReq := &CreateAccountRequest{}
+	if err := json.NewDecoder(r.Body).Decode(createAccountReq); err != nil{
+		return fmt.Errorf("could not decode request body: %v", err)
+	}
+
+	account := NewAccount(createAccountReq.FirstName, createAccountReq.LastName)
+
+	if err := s.store.CreateAccount(account); err != nil{
+		return fmt.Errorf("could not create account: %v", err)
+	} 
+	return WriteJSON(w, http.StatusCreated, account)
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error{
@@ -85,4 +79,23 @@ func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) 
 
 func (s *APIServer) handleTransferAccount(w http.ResponseWriter, r *http.Request) error{
 	return nil
+}
+
+
+//Function signature for API handlers
+type apiFunc func(http.ResponseWriter, *http.Request) error
+
+func WriteJSON(w http.ResponseWriter, status int, v any) error{
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(status)
+	return json.NewEncoder(w).Encode(v)
+}
+
+func makeHttpHandlerFunc(f apiFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := f(w, r); err != nil {
+			//handle the error
+			WriteJSON(w, http.StatusBadRequest, APIError{Error: err.Error()})
+		}
+	}
 }
